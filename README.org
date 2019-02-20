@@ -13,8 +13,6 @@
 
   #+BEGIN_SRC sh
     go get github.com/kumakichi/patch-go-tool-trace && patch-go-tool-trace
-
-    go tool trace -http=127.0.0.1:8083 trace.out
   #+END_SRC
 
   If you get error like:
