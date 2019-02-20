@@ -1,41 +1,54 @@
 package main
 
 import (
-	"bytes"
-	"fmt"
 	"go/build"
-	"io/ioutil"
 	"log"
+	"os"
 	"os/exec"
 	"path/filepath"
-)
 
-const (
-	// http://127.0.0.1:8083
-	webComponentsV0Token = "AkuXKVDyq7S8wMrSAh8heevmtL2E0S7p7qOOETSiIdNc0EA6JNOu88v9gO5TlPZ6ik33U7iquKiiVOjLpJDRcAoAAABSeyJvcmlnaW4iOiJodHRwOi8vMTI3LjAuMC4xOjgwODMiLCJmZWF0dXJlIjoiV2ViQ29tcG9uZW50c1YwIiwiZXhwaXJ5IjoxNjEyMjIzOTk5fQ=="
+	"github.com/gobuffalo/packr/v2"
 )
 
 func main() {
+	box := packr.New("static files", "./static")
+
 	pkg, err := build.Default.Import("cmd", "", build.FindOnly)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	tracePath := pkg.Dir + filepath.FromSlash("/trace/trace.go")
-	traceContent, err := ioutil.ReadFile(tracePath)
+	writeFile(pkg.Dir, "/trace/trace.go", box, "trace.go")
+	writeFile(pkg.Dir, "/../../misc/trace/trace_viewer_full.html", box, "trace_viewer_full.html")
+	writeFile(pkg.Dir, "/../../misc/trace/webcomponents.min.js", box, "webcomponents.min.js")
+
+	log.Printf("running command: go install cmd/trace ...")
+	c, err := exec.Command("go", "install", "cmd/trace").CombinedOutput()
+	if err != nil {
+		log.Fatal(string(c), err)
+	}
+}
+
+func writeFile(dir, path string, box *packr.Box, name string) {
+	b, err := box.Find(name)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	patchHead := fmt.Sprintf(`<head><meta http-equiv="origin-trial" content="%s">`, webComponentsV0Token)
-	patchedContent := bytes.Replace(traceContent, []byte("<head>"), []byte(patchHead), 1)
-	err = ioutil.WriteFile(tracePath, patchedContent, 0644)
+	filePath := dir + filepath.FromSlash(path)
+	file, err := os.OpenFile(filePath, os.O_WRONLY|os.O_TRUNC|os.O_CREATE, 0644)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer file.Close()
+
+	log.Printf("patching file %s ...\n", filePath)
+	n, err := file.Write(b)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	_, err = exec.Command("go", "install", "cmd/trace").CombinedOutput()
-	if err != nil {
-		log.Fatal(err)
+	if n != len(b) {
+		log.Fatalf("write length: %d, should be: %d\n", n, len(b))
 	}
 }

@@ -5,7 +5,9 @@
 
   [[https://github.com/golang/go/issues/34374][golang ISSUE #34374 : cmd/trace: requires HTML imports, which doesn't work on any major browser anymore]]
 
-  this repo implemented steps given by [[https://github.com/golang/go/issues/34374#issuecomment-583840806][stapelberg]]
+  +this repo implemented steps given by [[https://github.com/golang/go/issues/34374#issuecomment-583840806][stapelberg]]+
+
+  this repo implemented steps given by [[https://github.com/golang/go/issues/34374#issuecomment-589022051][jpvillaseca]]
 
 * How to use
 
