@@ -1,0 +1,16 @@
+* About
+  #+BEGIN_QUOTE
+  HTML Imports is deprecated and has now been removed as of M80. See https://www.chromestatus.com/features/5144752345317376 and https://developers.google.com/web/updates/2019/07/web-components-time-to-upgrade for more details.
+  #+END_QUOTE
+
+  [[https://github.com/golang/go/issues/34374][golang ISSUE #34374 : cmd/trace: requires HTML imports, which doesn't work on any major browser anymore]]
+
+  this repo implemented steps given by [[https://github.com/golang/go/issues/34374#issuecomment-583840806][stapelberg]]
+
+* How to use
+
+  #+BEGIN_SRC sh
+    go get github.com/kumakichi/patch-go-tool-trace && patch-go-tool-trace
+
+    go tool trace -http=127.0.0.1:8083 trace.out
+  #+END_SRC
