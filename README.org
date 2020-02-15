@@ -14,3 +14,15 @@
 
     go tool trace -http=127.0.0.1:8083 trace.out
   #+END_SRC
+
+  If you get error like:
+
+  #+BEGIN_QUOTE
+  err: open .../go/src/cmd/trace/trace.go: permission denied
+  #+END_QUOTE
+
+  run *patch-go-tool-trace* with sudo:
+
+  #+BEGIN_SRC sh
+    sudo patch-go-tool-trace
+  #+END_SRC
