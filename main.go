@@ -18,7 +18,7 @@ const (
 func main() {
 	pkg, err := build.Default.Import("cmd", "", build.FindOnly)
 	if err != nil {
-		fmt.Println("err:", err)
+		log.Fatal(err)
 	}
 
 	tracePath := pkg.Dir + filepath.FromSlash("/trace/trace.go")
@@ -31,11 +31,11 @@ func main() {
 	patchedContent := bytes.Replace(traceContent, []byte("<head>"), []byte(patchHead), 1)
 	err = ioutil.WriteFile(tracePath, patchedContent, 0644)
 	if err != nil {
-		fmt.Println("err:", err)
+		log.Fatal(err)
 	}
 
 	_, err = exec.Command("go", "install", "cmd/trace").CombinedOutput()
 	if err != nil {
-		fmt.Println("err:", err)
+		log.Fatal(err)
 	}
 }
